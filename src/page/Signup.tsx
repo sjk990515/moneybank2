@@ -3,38 +3,108 @@ import styled from "styled-components";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import moneybank_logo from "../image/moneybank_logo.png";
+import { useNavigate } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
+import { v4 as uuidv4 } from "uuid";
+
 function Signup() {
-  const [idText, setIdText] = useState("");
+  const navigate = useNavigate();
+
+  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const postMutation = useMutation(
     (newUser) => axios.post(`http://localhost:3001/user`, newUser),
     {
-      onSuccess: () => {},
+      onSuccess: () => {
+        alert("회원가입 완료 되었습니다.");
+        navigate("/");
+      },
     }
   );
 
   const idOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIdText(e.target.value);
+    setUserId(e.target.value);
+  };
+  const nameOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
+  };
+  const passwordOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserPassword(e.target.value);
+  };
+  const confirmPasswordOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(e.target.value);
   };
 
-  const signUpOnClick = () => {
-    // e.preventDefault();
-    let newUser: any = {
-      idText,
-    };
+  const signUpOnClick = async () => {
+    const response = await axios.get(
+      `http://localhost:3001/user?userId=${userId}`
+    );
 
-    postMutation.mutate(newUser);
+    if (
+      userId == "" ||
+      userName == "" ||
+      userPassword == "" ||
+      confirmPassword == ""
+    ) {
+      alert("빈칸이 존재합니다.");
+    } else if (confirmPassword != userPassword) {
+      alert("비밀번호가 같지 않습니다");
+      setConfirmPassword("");
+      setUserPassword("");
+    } else if (response.data.length == 0) {
+      let newUser: any = {
+        id: uuidv4(),
+        userId,
+        userName,
+        userPassword,
+      };
+      postMutation.mutate(newUser);
+    } else {
+      alert("존재하는 아이디 입니다.");
+      setUserId("");
+    }
   };
   return (
     <SignUpDiv>
+      <GoBack
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        <IoIosArrowBack />
+      </GoBack>
+
       <SignUpBox>
         <LogoTitle src={moneybank_logo} alt="moneybank_logo" />
         <SignUpForm>
           <SignUpText>Create your Account</SignUpText>
-          <IdInput placeholder="Id" onChange={idOnChange} />
-          <PassInput placeholder="Name" />
-          <PassInput placeholder="Password" />
-          <PassInput placeholder="Confirm Password" />
-          <SignBox>Sign up</SignBox>
+          <IdInput
+            placeholder="Id"
+            value={userId}
+            maxLength={25}
+            onChange={idOnChange}
+          />
+          <PassInput
+            placeholder="Name"
+            maxLength={16}
+            onChange={nameOnChange}
+          />
+          <PassInput
+            placeholder="Password"
+            value={userPassword}
+            maxLength={20}
+            onChange={passwordOnChange}
+          />
+          <PassInput
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            maxLength={20}
+            onChange={confirmPasswordOnChange}
+          />
+          <SignBox onClick={signUpOnClick}>Sign up</SignBox>
         </SignUpForm>
       </SignUpBox>
     </SignUpDiv>
@@ -44,16 +114,23 @@ function Signup() {
 export default Signup;
 
 const SignUpDiv = styled.div`
+  position: relative;
   background-color: #fff;
   width: 830px;
   height: 100vh;
   display: flex;
   justify-content: center;
 `;
+const GoBack = styled.div`
+  position: absolute;
+  font-size: 32px;
+  cursor: pointer;
+  top: 50px;
+  left: 70px;
+`;
 const SignUpText = styled.h2`
   font-weight: 600;
   margin-top: 20px;
-  /* font-size: 18px; */
 `;
 const SignUpBox = styled.div`
   display: flex;

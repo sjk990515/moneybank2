@@ -1,1 +1,16 @@
-{}
+{
+  "user": [
+    {
+      "id": "8cbfebf4-71d5-4d53-8a31-4c6f2998cdb3",
+      "userId": "wtf",
+      "userName": "wtf",
+      "userPassword": "wtf"
+    },
+    {
+      "id": "e342f1f7-f137-476b-b0a8-473e81d3db0d",
+      "userId": "master",
+      "userName": "master",
+      "userPassword": "master"
+    }
+  ]
+}

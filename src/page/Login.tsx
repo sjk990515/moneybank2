@@ -19,13 +19,11 @@ function Login() {
           <IdInput placeholder="Id" />
           <PassInput placeholder="Password" />
 
-          {/* <ButtonBox> */}
           <SignBox>Sign in</SignBox>
 
           <SignUp>
             Don't have an account? <Sign onClick={signUpOnClick}>Sign up</Sign>
           </SignUp>
-          {/* </ButtonBox> */}
         </LoginForm>
       </LoginBox>
     </LoginDiv>
