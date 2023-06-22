@@ -6,6 +6,7 @@ import moneybank_logo from "../image/moneybank_logo.png";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { v4 as uuidv4 } from "uuid";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 function Signup() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ function Signup() {
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passIconOn, setPassIconOn] = useState(false);
+  const [confirmIconOn, setConfirmIconOn] = useState(false);
 
   const postMutation = useMutation(
     (newUser) => axios.post(`http://localhost:3001/user`, newUser),
@@ -54,6 +57,8 @@ function Signup() {
       alert("비밀번호가 같지 않습니다");
       setConfirmPassword("");
       setUserPassword("");
+      setPassIconOn(false);
+      setConfirmIconOn(false);
     } else if (response.data.length == 0) {
       let newUser: any = {
         id: uuidv4(),
@@ -66,6 +71,13 @@ function Signup() {
       alert("존재하는 아이디 입니다.");
       setUserId("");
     }
+  };
+
+  const passIconOnClick = () => {
+    setPassIconOn(!passIconOn);
+  };
+  const confirmIconOnClick = () => {
+    setConfirmIconOn(!confirmIconOn);
   };
   return (
     <SignUpDiv>
@@ -87,23 +99,35 @@ function Signup() {
             maxLength={25}
             onChange={idOnChange}
           />
-          <PassInput
+          <NameInput
             placeholder="Name"
             maxLength={16}
             onChange={nameOnChange}
           />
-          <PassInput
-            placeholder="Password"
-            value={userPassword}
-            maxLength={20}
-            onChange={passwordOnChange}
-          />
-          <PassInput
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            maxLength={20}
-            onChange={confirmPasswordOnChange}
-          />
+          <PassBox>
+            <PassInput
+              type={passIconOn ? "text" : "password"}
+              placeholder="Password"
+              value={userPassword}
+              maxLength={20}
+              onChange={passwordOnChange}
+            />
+            <PassIcon onClick={passIconOnClick}>
+              {passIconOn ? <AiFillEye /> : <AiFillEyeInvisible />}
+            </PassIcon>
+          </PassBox>
+          <PassBox>
+            <PassInput
+              type={confirmIconOn ? "text" : "password"}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              maxLength={20}
+              onChange={confirmPasswordOnChange}
+            />
+            <PassIcon onClick={confirmIconOnClick}>
+              {confirmIconOn ? <AiFillEye /> : <AiFillEyeInvisible />}
+            </PassIcon>
+          </PassBox>
           <SignBox onClick={signUpOnClick}>Sign up</SignBox>
         </SignUpForm>
       </SignUpBox>
@@ -158,7 +182,30 @@ const IdInput = styled.input`
     color: #ccc;
   }
 `;
+const PassBox = styled.div`
+  position: relative;
+  margin-top: 40px;
+`;
 const PassInput = styled.input`
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #f5ba41;
+  padding-bottom: 5px;
+  font-size: 16px;
+  text-indent: 5px;
+  &::placeholder {
+    color: #ccc;
+  }
+`;
+const PassIcon = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+`;
+
+const NameInput = styled.input`
   width: 100%;
   border: 0;
   border-bottom: 1px solid #f5ba41;
@@ -170,11 +217,7 @@ const PassInput = styled.input`
     color: #ccc;
   }
 `;
-const ButtonBox = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
+
 const SignBox = styled.p`
   margin-top: 40px;
   cursor: pointer;

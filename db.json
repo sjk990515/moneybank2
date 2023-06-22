@@ -11,6 +11,12 @@
       "userId": "master",
       "userName": "master",
       "userPassword": "master"
+    },
+    {
+      "id": "2de9ee45-0426-4d5a-8eee-0d49e120b0aa",
+      "userId": "master2",
+      "userName": "master2",
+      "userPassword": "master"
     }
   ]
 }
